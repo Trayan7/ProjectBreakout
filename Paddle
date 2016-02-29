@@ -1,0 +1,28 @@
+package project;
+
+import java.awt.Component;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
+import acm.graphics.*;
+import acm.program.GraphicsProgram;
+
+public class Paddle extends GraphicsProgram {
+	public void run() {
+
+		double width = 40;
+		final double PADDLE_HEIGHT = 5;
+		double x = 0, y = 100;
+
+		GRect paddle = new GRect(x, y, width, PADDLE_HEIGHT);
+		paddle.setFilled(true);
+		add(paddle);
+
+		while (true) {
+			PointerInfo pointer = MouseInfo.getPointerInfo();
+			Point point = pointer.getLocation();
+			x = point.getX();
+			paddle.setLocation(x - width / 2, y);
+		}
+	}
+}
