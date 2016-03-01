@@ -32,11 +32,15 @@ public class FunctionalityTest extends GraphicsProgram{
 		while(win == false && lose == false) {
 			
 		redBallThread.start();
-
-		if (	getElementAt(redBall.getX() + Math.sin(redBall.getDirection()) * DELTA , redBall.getY() + Math.cos(redBall.getDirection()) * DELTA) != null ||
-				getElementAt(redBall.getX() + Math.sin(redBall.getDirection()) * DELTA + SIZE , redBall.getY() + Math.cos(redBall.getDirection()) * DELTA) != null ||
-				getElementAt(redBall.getX() + Math.sin(redBall.getDirection()) * DELTA , redBall.getY() + Math.cos(redBall.getDirection()) * DELTA + SIZE) != null ||
-				getElementAt(redBall.getX() + Math.sin(redBall.getDirection()) * DELTA + SIZE, redBall.getY() + Math.cos(redBall.getDirection()) * DELTA +SIZE) != null){
+		
+		double deltaX = Math.sin(redBall.getDirection());
+		double deltaY = Math.cos(redBall.getDirection());
+		double redX = redBall.getX();
+		double redY = redBall.getY();
+		if (		getElementAt(redX + deltaX * DELTA , redY + deltaY * DELTA) != null ||
+				getElementAt(redX + deltaX * DELTA + SIZE , redY + deltaY * DELTA) != null ||
+				getElementAt(redX + deltaX * DELTA , redY + deltaY * DELTA + SIZE) != null ||
+				getElementAt(redX + deltaX * DELTA + SIZE, redY + deltaY * DELTA + SIZE) != null){
 			
 			redBall.setDirection(calculateDirection(redBall,getElementAt(redBall.getX(),redBall.getY())));
 		}
