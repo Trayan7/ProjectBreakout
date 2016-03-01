@@ -1,0 +1,29 @@
+/**
+	 * This Method calculates the velocity of a Ball reflected by the paddle.
+	 * @param ball
+	 * The GOval of the ball
+	 * @param paddle
+	 * The GRect of the paddle
+	 * @param xVelocity
+	 * Movement in x direction
+	 * @param yVelocity
+	 * Movement in Y direction
+	 * @return
+	 * Returns an Array of doubles with x at index 0 and y at 1.
+	 */
+	public double[] PaddleReflect(GOval ball, GRect paddle, double xVelocity, double yVelocity){
+		double[] newVel = new double[2];
+		
+		double xBall = ball.getLocation().getX();
+		double xPaddle = paddle.getLocation().getX();
+		
+		double deltaDistance = xBall - (xPaddle + ball.getWidth());
+		double deltaMax = paddle.getWidth()/2 + ball.getWidth();
+		
+		double velocity = Math.sqrt(xVelocity*xVelocity+yVelocity*yVelocity);
+		
+		newVel[1] = - velocity * Math.sqrt(deltaDistance/deltaMax);
+		newVel[0] = velocity * Math.sqrt(1 - deltaDistance/deltaMax);
+				
+		return newVel;
+	}
