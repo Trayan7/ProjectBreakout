@@ -1,0 +1,71 @@
+package ProgrammProject;
+
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
+import acm.graphics.*;
+import acm.program.*;
+import acm.util.Animator;
+
+public class Test extends GraphicsProgram {
+	
+	final double WINDOW_WIDTH = 300;
+	final double WINDOW_HEIGHT = 600;
+	final double SIZE = 10;
+	double width = 50;
+	double xPaddle = 0, yPaddle = 500;
+	final double PADDLE_HEIGHT = 5;
+	double x = 0.1;
+	double y = 0.1;
+	
+	public void run() {
+		
+		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		
+		// Makeshift ball
+		GOval ball = new GOval(100, 100, SIZE, SIZE);
+		ball.setFilled(true);
+		add(ball);
+
+		GRect paddle = new GRect(x, y, width, PADDLE_HEIGHT);
+		paddle.setFilled(true);
+		add(paddle);
+
+		waitForClick();
+		
+		
+		while (true) {
+		ball.movePolar(20, 80);
+		waitForClick();
+		}
+	}
+	
+	public double reflect(AnimatedBall ball, GObject collisionObject) {
+		double direction = ball.getDirection();
+		int side = (int) (direction / 90);
+		double colXMin = collisionObject.getX();
+		double colXMax = collisionObject.getX() + collisionObject.getWidth();
+		double colYMin = collisionObject.getY();
+		double colYMax = collisionObject.getY() + collisionObject.getHeight();
+		switch (side){
+		case 0:
+			//true => right border
+			if(colXMin){
+				return 90 - direction;
+			}else {
+				return 180 - direction;
+			}
+		case 1:
+			//true => upper border
+			if(colXMax >= ball.getX()){
+				return 270 - direction;
+			}else {
+				return 180 - direction
+			}
+		case 2:
+		case 3:
+			
+	}
+
+}
+}
