@@ -1,0 +1,67 @@
+package Breakpoint;
+
+import java.awt.Color;
+
+import acm.graphics.GObject;
+import acm.program.GraphicsProgram;
+
+public class FunctionalityTest extends GraphicsProgram{
+
+	private static final double SIZE = 75;
+	
+	public void run() {
+		double x1 = getWidth() / 3 - SIZE / 2;
+		double x2 = 2 * getWidth() / 3 - SIZE / 2;
+		double y = (getHeight() - SIZE) / 2;
+		AnimatedBall redBall = new AnimatedBall(SIZE);
+		redBall.setFilled(true);
+		redBall.setColor(Color.RED);
+		add(redBall, x1, y);
+		AnimatedBall greenBall = new AnimatedBall(SIZE);
+		greenBall.setFilled(true);
+		greenBall.setColor(Color.GREEN);
+		add(greenBall, x2, y);
+
+		Thread redBallThread = new Thread(redBall);
+		Thread greenBallThread = new Thread(greenBall);
+		waitForClick();
+		redBallThread.start();
+		greenBallThread.start();
+		
+		
+		if (getElementAt(redBall.getX(),redBall.getY()) != null) {
+			redBall.setDirection(calculateDirection(redBall,getElementAt(redBall.getX(),redBall.getY())));
+		}
+		
+		if (getElementAt(redBall.getX(),redBall.getY()) != null) {
+			redBall.setDirection(calculateDirection(redBall,getElementAt(redBall.getX(),redBall.getY())));
+		}
+		
+		// redBallThread.wait();
+		// try {
+		// redSquareThread.sl(50);
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
+	}
+
+	private double calculateDirection(AnimatedBall redBall, GObject elementAt) {
+//		if(elementAt instanceof Brick /*|| elementAt instanceof Wall*/){
+//			
+//		}else if(elementAt instanceof Paddle){
+//			
+//		}else if(elementAt instanceof Bottom){
+//			
+//		}
+			
+		
+		
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	
+	
+}
