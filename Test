@@ -1,0 +1,52 @@
+package ProgrammProject;
+
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
+import acm.graphics.*;
+import acm.program.*;
+
+public class Test extends GraphicsProgram {
+	
+	final double X = 300;
+	final double Y = 800;
+	final double SIZE = 10;
+	double width = 50;
+	double xPaddle = 0, yPaddle = 500;
+	final double PADDLE_HEIGHT = 5;
+	double x = 1;
+	double y = 1;
+	
+	public void run() {
+		
+		setSize(300, 600);
+		
+		// Makeshift ball
+		GOval ball = new GOval(100, 100, SIZE, SIZE);
+		ball.setFilled(true);
+		add(ball);
+
+		GRect paddle = new GRect(x, y, width, PADDLE_HEIGHT);
+		paddle.setFilled(true);
+		add(paddle);
+
+		
+		while (true) {
+			if (ball.getLocation().getX() >= X - SIZE - x || ball.getLocation().getX() <= 0 - x) {
+				x = - x;
+			}
+			if (ball.getLocation().getY() >= Y - SIZE - y || ball.getLocation().getY() <= 0 - y) {
+				y = - y;
+			}
+				ball.move(x, y);
+				
+				PointerInfo pointer = MouseInfo.getPointerInfo();
+				Point point = pointer.getLocation();
+				xPaddle = point.getX();
+				paddle.setLocation(xPaddle - width / 2, yPaddle);
+				
+			
+		}
+	}
+
+}
