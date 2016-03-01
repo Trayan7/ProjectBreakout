@@ -1,42 +1,48 @@
-package Breakpoint;
+package Breakout;
 
 import java.awt.Color;
-
-import acm.graphics.GObject;
+import acm.graphics.*;
 import acm.program.GraphicsProgram;
 
 public class FunctionalityTest extends GraphicsProgram{
 
-	private static final double SIZE = 75;
+	private static final double SIZE = 25;
+	static final double DELTA = 2;
 	
 	public void run() {
-		double x1 = getWidth() / 3 - SIZE / 2;
-		double x2 = 2 * getWidth() / 3 - SIZE / 2;
-		double y = (getHeight() - SIZE) / 2;
+		setSize(300, 600);
+		double x = 150 - SIZE / 2;
+		double y = this.getHeight() / 2;
 		AnimatedBall redBall = new AnimatedBall(SIZE);
 		redBall.setFilled(true);
 		redBall.setColor(Color.RED);
-		add(redBall, x1, y);
-		AnimatedBall greenBall = new AnimatedBall(SIZE);
-		greenBall.setFilled(true);
-		greenBall.setColor(Color.GREEN);
-		add(greenBall, x2, y);
-
+		add(redBall, x, y);
+		
+		GLabel startMessage = new GLabel("Click to start Breakout!");
+		startMessage.setLocation(150 - startMessage.getWidth() / 2, this.getHeight()/2);
+		add(startMessage);
+		
 		Thread redBallThread = new Thread(redBall);
-		Thread greenBallThread = new Thread(greenBall);
 		waitForClick();
+		startMessage.setVisible(false);
+		
+		//Game starts.
+		boolean win = false;
+		boolean lose = false;
+		while(win == false && lose == false) {
+			
 		redBallThread.start();
-		greenBallThread.start();
-		
-		
-		if (getElementAt(redBall.getX(),redBall.getY()) != null) {
+
+		if (	getElementAt(redBall.getX() + Math.sin(redBall.getDirection()) * DELTA , redBall.getY() + Math.cos(redBall.getDirection()) * DELTA) != null ||
+				getElementAt(redBall.getX() + Math.sin(redBall.getDirection()) * DELTA + SIZE , redBall.getY() + Math.cos(redBall.getDirection()) * DELTA) != null ||
+				getElementAt(redBall.getX() + Math.sin(redBall.getDirection()) * DELTA , redBall.getY() + Math.cos(redBall.getDirection()) * DELTA + SIZE) != null ||
+				getElementAt(redBall.getX() + Math.sin(redBall.getDirection()) * DELTA + SIZE, redBall.getY() + Math.cos(redBall.getDirection()) * DELTA +SIZE) != null){
+			
 			redBall.setDirection(calculateDirection(redBall,getElementAt(redBall.getX(),redBall.getY())));
 		}
 		
-		if (getElementAt(redBall.getX(),redBall.getY()) != null) {
-			redBall.setDirection(calculateDirection(redBall,getElementAt(redBall.getX(),redBall.getY())));
 		}
-		
+
 		// redBallThread.wait();
 		// try {
 		// redSquareThread.sl(50);
