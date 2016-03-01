@@ -1,0 +1,9 @@
+public double reflect(AnimatedBall ball, GObject collisionObject) {
+		double direction = ball.getDirection();
+		int side = (int) (direction / 180);
+		switch (side) {
+		case 0:
+			return 180 - direction;
+		case 1:
+			return 360 - direction;
+		}
