@@ -7,12 +7,13 @@ public class AnimatedBall extends GOval implements Runnable{
 
 	/* Private instance variables */
 	private double direction = 90;
-	private double x = 150;
-	private double y = 350;
+	private static int size = 5;
+//	private double x = 150;
+//	private double y = 350;
 	
 	static final int PAUSE_TIME = 20;
 	static final int CHANGE_TIME = 50;
-	static final double DELTA = 2;
+	private static double DELTA = 2;
 	
 	/* Creates a new AnimatedBall of the specified size */
 	public AnimatedBall(double size) {
@@ -22,7 +23,9 @@ public class AnimatedBall extends GOval implements Runnable{
 	/* Runs when this object is started to animate the ball */
 	
 	public void run() {
-		for (int t = 0; true; t++) {
+		
+		//while(Model.isRunning() == true){
+		while(true){
 			movePolar(DELTA, direction);
 			pause(PAUSE_TIME);
 		}
@@ -35,22 +38,38 @@ public class AnimatedBall extends GOval implements Runnable{
 	public double getDirection(){
 		return direction;
 	}
+
+	public static double getDelta() {
+		return DELTA;
+	}
 	
-	public double getY() {
-		return y;
+	public static int getBallSize() {
+		return size;
 	}
 
-	public void setY(double y) {
-		this.y = y;
+	public static void setSize(int size) {
+		AnimatedBall.size = size;
 	}
 
-	public double getX() {
-		return x;
-	}
 
-	public void setX(double x) {
-		this.x = x;
-	}
+
+	
+	
+//	public double getY() {
+//		return y;
+//	}
+//
+//	public void setY(double y) {
+//		this.y = y;
+//	}
+//
+//	public double getX() {
+//		return x;
+//	}
+//
+//	public void setX(double x) {
+//		this.x = x;
+//	}
 	
 	
 	
