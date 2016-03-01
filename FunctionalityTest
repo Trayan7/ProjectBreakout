@@ -1,77 +1,98 @@
-package Breakout;
+package Breakpoint;
 
 import java.awt.Color;
-import acm.graphics.*;
+
+import acm.graphics.GLabel;
+import acm.graphics.GObject;
+import acm.graphics.GPoint;
 import acm.program.GraphicsProgram;
 
 public class FunctionalityTest extends GraphicsProgram{
 
-	private static final double SIZE = 25;
-	static final double DELTA = 2;
-	
+//	private static final double SIZE = 5;
+//	AnimatedBall redBall = new AnimatedBall(SIZE);
+
 	public void run() {
-		setSize(300, 600);
-		double x = 150 - SIZE / 2;
-		double y = this.getHeight() / 2;
-		AnimatedBall redBall = new AnimatedBall(SIZE);
-		redBall.setFilled(true);
-		redBall.setColor(Color.RED);
-		add(redBall, x, y);
+		
+		setSize(Model.getWidth(), Model.getHeight());
+		
+		AnimatedBall curBall = Model.getRedBall(); 
+		
+		curBall.setFilled(true);
+		curBall.setColor(Color.RED);
+		add(curBall, Model.getBallStart());
 		
 		GLabel startMessage = new GLabel("Click to start Breakout!");
-		startMessage.setLocation(150 - startMessage.getWidth() / 2, this.getHeight()/2);
+		startMessage.setLocation(Model.getPaddleStart().getX() - 50, Model.getPaddleStart().getY() + 25);
 		add(startMessage);
 		
-		Thread redBallThread = new Thread(redBall);
-		waitForClick();
-		startMessage.setVisible(false);
-		
-		//Game starts.
-		boolean win = false;
-		boolean lose = false;
-		while(win == false && lose == false) {
+		Thread redBallThread = new Thread(curBall);
 			
+		waitForClick();
+		remove(startMessage);
 		redBallThread.start();
 		
-		double deltaX = Math.sin(redBall.getDirection());
-		double deltaY = Math.cos(redBall.getDirection());
-		double redX = redBall.getX();
-		double redY = redBall.getY();
-		if (		getElementAt(redX + deltaX * DELTA , redY + deltaY * DELTA) != null ||
-				getElementAt(redX + deltaX * DELTA + SIZE , redY + deltaY * DELTA) != null ||
-				getElementAt(redX + deltaX * DELTA , redY + deltaY * DELTA + SIZE) != null ||
-				getElementAt(redX + deltaX * DELTA + SIZE, redY + deltaY * DELTA + SIZE) != null){
+		while(redBallThread.isAlive() && !Model.isLost() && !Model.isWon()){
+			println(curBall.getLocation().toString());
 			
-			redBall.setDirection(calculateDirection(redBall,getElementAt(redBall.getX(),redBall.getY())));
-		}
-		
-		}
+			
+			if(wouldCollide(curBall)){
+				//curBall.setDirection(calculateDirection(curBall,getElementAt(curBall.getX(),curBall.getY())));
+			}
 
-		// redBallThread.wait();
-		// try {
-		// redSquareThread.sl(50);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-
+		}
 	}
 
-	private double calculateDirection(AnimatedBall redBall, GObject elementAt) {
+private boolean wouldCollide(AnimatedBall curBall) {
+	
+	double deltaX = Math.sin(curBall.getDirection());
+	double deltaY = Math.cos(curBall.getDirection());
+	double redX = curBall.getX();
+	double redY = curBall.getY();
+	double delta = AnimatedBall.getDelta();
+	double size = AnimatedBall.getBallSize();
+	return	getElementAt(redX + deltaX * delta , redY + deltaY * delta) != null ||
+			getElementAt(redX + deltaX * delta + size , redY + deltaY * delta) != null ||
+			getElementAt(redX + deltaX * delta , redY + deltaY * delta + size) != null ||
+			getElementAt(redX + deltaX * delta + size, redY + deltaY * delta + size) != null;
+}
+		
+//	private double calculateDirection(AnimatedBall redBall, GObject elementAt) {
+//		double newDirection;
 //		if(elementAt instanceof Brick /*|| elementAt instanceof Wall*/){
-//			
+//			newDirection = reflect(redBall, elementAt);
 //		}else if(elementAt instanceof Paddle){
-//			
+//			newDirection = paddleReflect(redBall, elementAt);
 //		}else if(elementAt instanceof Bottom){
 //			
 //		}
-			
-		
-		
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	
+//	
+//		return newDirection;
+//	}
+
+//	private double paddleReflect(AnimatedBall redBall, GObject elementAt) {
+//		double newDirection;
+//		// TODO Implement correct paddleReflection
+//		double direction = redBall.getDirection();
+//		newDirection = direction + 180;
+//		
+//		return newDirection;
+//	}
+//
+//	private double reflect(AnimatedBall redBall, GObject elementAt) {
+//		double newDirection;
+//		double direction = redBall.getDirection();
+//		int side = (int) (direction / 180);
+//		switch (side) {
+//		case 0:
+//			newDirection = 180 - direction;
+//		case 1:
+//			newDirection = 360 - direction;
+//		default:
+//			assert (false): "Reflection can not be callucalted correctly";
+//			newDirection = direction;
+//		}
+//		return newDirection;
+//	}	
 	
 }
