@@ -1,0 +1,57 @@
+package Breakpoint;
+
+import acm.graphics.GOval;
+import acm.util.RandomGenerator;
+
+public class AnimatedBall extends GOval implements Runnable{
+
+	/* Private instance variables */
+	private double direction = 90;
+	private double x = 150;
+	private double y = 350;
+	
+	static final int PAUSE_TIME = 20;
+	static final int CHANGE_TIME = 50;
+	static final double DELTA = 2;
+	
+	/* Creates a new AnimatedBall of the specified size */
+	public AnimatedBall(double size) {
+		super(size,size);
+	}
+	
+	/* Runs when this object is started to animate the ball */
+	
+	public void run() {
+		for (int t = 0; true; t++) {
+			movePolar(DELTA, direction);
+			pause(PAUSE_TIME);
+		}
+	}
+	
+	public void setDirection(double dir){
+		this.direction = dir;
+	}
+
+	public double getDirection(){
+		return direction;
+	}
+	
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+	
+	
+	
+}
