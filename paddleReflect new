@@ -1,0 +1,21 @@
+	public double PaddleReflect(AnimatedBall ball, GRect paddle){
+		double direction = ball.getDirection();
+		assert(360 <= direction && 0 >= direction);
+		
+		double xBall = ball.getLocation().getX();
+		double xPaddle = paddle.getLocation().getX();
+		
+		double deltaDistance = xBall - (xPaddle + ball.getWidth() / 2.0);
+		double deltaMax = paddle.getWidth() / 2.0 +  ball.getWidth();
+		
+		double newDirection;
+		if(direction <= 180){
+			newDirection = 180 - direction;
+		}else{
+			newDirection = 360 - direction;
+		}
+		newDirection = newDirection - (deltaDistance/deltaMax * newDirection);
+
+				
+		return newDirection;
+	}
