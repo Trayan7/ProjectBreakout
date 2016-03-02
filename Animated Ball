@@ -28,6 +28,7 @@ public class AnimatedBall extends GOval implements Runnable{
 		while(true){
 			movePolar(DELTA, direction);
 			pause(PAUSE_TIME);
+			//timer.pause(); //GBUE
 		}
 	}
 	
