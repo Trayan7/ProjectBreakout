@@ -1,6 +1,6 @@
 	public double PaddleReflect(AnimatedBall ball, GRect paddle){
 		double direction = ball.getDirection();
-		assert(360 <= direction && 0 >= direction):"Invalid direction."
+		assert(360 >= direction && 0 <= direction):"Invalid direction."
 		
 		double xBall = ball.getLocation().getX();
 		double xPaddle = paddle.getLocation().getX();
