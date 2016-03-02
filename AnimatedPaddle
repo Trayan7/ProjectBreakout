@@ -10,7 +10,7 @@ package Breakout;
 	import acm.program.GraphicsProgram;
 	
 	
-	public class AnimatedPaddle extends GOval implements Runnable{
+	public class AnimatedPaddle extends GRect implements Runnable{
 
 		/* Private instance variables */
 		private static double width = 50;
