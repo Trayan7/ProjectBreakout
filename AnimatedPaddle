@@ -1,52 +1,49 @@
-package Breakout;
+package breakout;
 
-	import acm.graphics.GOval;
-	import acm.util.RandomGenerator;
-	import java.awt.Component;
-	import java.awt.MouseInfo;
-	import java.awt.Point;
-	import java.awt.PointerInfo;
-	import acm.graphics.*;
-	import acm.program.GraphicsProgram;
-	
-	
-	public class AnimatedPaddle extends GRect implements Runnable{
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
+import acm.graphics.GRect;
+//	import acm.program.*;
 
-		/* Private instance variables */
-		private static double width = 50;
-		private static double height = 10;
-		
-		/* Creates a new AnimatedRectangle of the specified size */
-		public AnimatedPaddle(double width, double height) {
-			super(width, height);
-			super.setFilled(true);
-		}
-		
-		/* Runs when this object is started to animate the rectangle */
-		public void run() {
-			
-			//while(Model.isRunning() == true){
-			while(true){
-				PointerInfo pointer = MouseInfo.getPointerInfo();
-				Point point = pointer.getLocation();
-				double x = point.getX();
-				this.setLocation(x - width / 2, Model.getHeigth() - 100);
-			}
-		}
-		
-		public double getWidth() {
-			return width;
-		}
-		
-		public double getHeight() {
-			return height;
-		}
+public class AnimatedPaddle extends GRect implements Runnable {
 
-		public static void setWidth(double width) {
-			AnimatedPaddle.width = width;
-		}
-		
-		public static void setHeight(double height) {
-			AnimatedPaddle.height = height;
+	/* Private instance variables */
+	private static double width = 50;
+	private static double height = 10;
+	private Timer timer = Model.getTimer();
+
+	/* Creates a new AnimatedRectangle of the specified size */
+	public AnimatedPaddle(double width, double height) {
+		super(width, height);
+	}
+
+	/* Runs when this object is started to animate the rectangle */
+	public void run() {
+
+		// while(Model.isRunning() == true){
+		while (true) {
+			PointerInfo pointer = MouseInfo.getPointerInfo();
+			Point point = pointer.getLocation();
+			double x = point.getX();
+			this.setLocation(x - width / 2, Model.getHeight() - 100);
+			timer.pause();
 		}
 	}
+
+	public static double getPaddleWidth() {
+		return width;
+	}
+
+	public static double getPaddleHeight() {
+		return height;
+	}
+
+	public static void setWidth(double width) {
+		AnimatedPaddle.width = width;
+	}
+
+	public static void setHeight(double height) {
+		AnimatedPaddle.height = height;
+	}
+}
