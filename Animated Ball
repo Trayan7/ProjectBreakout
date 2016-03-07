@@ -1,19 +1,15 @@
-package Breakpoint;
+package breakout;
 
-import acm.graphics.GOval;
-import acm.util.RandomGenerator;
+import acm.graphics.*;
 
 public class AnimatedBall extends GOval implements Runnable{
 
 	/* Private instance variables */
 	private double direction = 90;
+	private Timer timer = new Timer(Model.getCycle());
 	private static int size = 5;
-//	private double x = 150;
-//	private double y = 350;
-	
-	static final int PAUSE_TIME = 20;
-	static final int CHANGE_TIME = 50;
-	private static double DELTA = 2;
+	private static double pixelPerTick = Model.getPixelPerTick();
+	private int hit = 1; //damage inflicted upon hitting a brick
 	
 	/* Creates a new AnimatedBall of the specified size */
 	public AnimatedBall(double size) {
@@ -21,14 +17,12 @@ public class AnimatedBall extends GOval implements Runnable{
 	}
 	
 	/* Runs when this object is started to animate the ball */
+	// Debugging shows that the ball moves before there is 
 	
 	public void run() {
-		
-		//while(Model.isRunning() == true){
-		while(true){
-			movePolar(DELTA, direction);
-			pause(PAUSE_TIME);
-			//timer.pause(); //GBUE
+		while(!Model.isPause()){
+			movePolar(pixelPerTick, direction);
+			timer.pause();
 		}
 	}
 	
@@ -41,7 +35,7 @@ public class AnimatedBall extends GOval implements Runnable{
 	}
 
 	public static double getDelta() {
-		return DELTA;
+		return pixelPerTick;
 	}
 	
 	public static int getBallSize() {
@@ -52,8 +46,21 @@ public class AnimatedBall extends GOval implements Runnable{
 		AnimatedBall.size = size;
 	}
 
+	public void setPixelPerTick(double vel){
+		AnimatedBall.pixelPerTick = vel;
+	}
 
-
+	public static double getPixelPerTick(){
+		return AnimatedBall.pixelPerTick;
+	}
+	
+	public int getHit(){
+		return hit;
+	}
+	
+	public void setHit(int val){
+		this.hit = val;
+	}
 	
 	
 //	public double getY() {
