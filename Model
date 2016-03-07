@@ -1,6 +1,6 @@
-package Breakpoint;
+package breakout;
 
-import acm.graphics.GPoint;
+import acm.graphics.*;
 
 public class Model {
 	
@@ -8,19 +8,27 @@ public class Model {
 	private static boolean won = false;
 	private static boolean lost = false;
 	private static boolean running = true;
+	private static boolean pause = false;
 	
 	/*Field specification*/
 	private static final int HEIGHT = 600;
-	private static final int WIDTH = 250;
+	private static final int WIDTH = 300;
+	
+	/*Timer specifications*/
+	private static final double cycle = 20; //in msec
+	private static Timer timer = new Timer(cycle);
 	
 	/*Ball specification*/
 	private static final GPoint BALL_START = new GPoint(WIDTH/2,HEIGHT/2);
 	private static AnimatedBall redBall = new AnimatedBall(AnimatedBall.getBallSize());
+	private static double pixelPerTick = 5;
 	
 	/*Paddle specification*/
-	private static int paddleWidth = 40;
+	private static int paddleWidth = 50;
 	private final double PADDLE_HEIGHT = 5;
+	private static AnimatedPaddle paddle = new AnimatedPaddle(AnimatedPaddle.getPaddleWidth(), AnimatedPaddle.getPaddleHeight());
 	private static final GPoint PADDLE_START = new GPoint(WIDTH/2 - paddleWidth/2,HEIGHT - 100 );
+	
 	
 	public static boolean isRunning() {
 		return running;
@@ -72,6 +80,38 @@ public class Model {
 
 	public static void setWon(boolean won) {
 		Model.won = won;
+	}
+
+	public static AnimatedPaddle getPaddle() {
+		return paddle;
+	}
+
+	public static boolean isPause() {
+		return pause;
+	}
+
+	public static void setPause(boolean pause) {
+		Model.pause = pause;
+	}
+
+	public static double getCycle() {
+		return cycle;
+	}
+
+	public static Timer getTimer() {
+		return timer;
+	}
+
+	public void setTimer(Timer timer) {
+		Model.timer = timer;
+	}
+
+	public static double getPixelPerTick() {
+		return pixelPerTick;
+	}
+
+	public static void setPixelPerTick(double pixelPerTick) {
+		Model.pixelPerTick = pixelPerTick;
 	}
 
 }
