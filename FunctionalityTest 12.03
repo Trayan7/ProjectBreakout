@@ -1,0 +1,346 @@
+package breakout;
+
+import acm.program.*;
+import acm.graphics.*;
+import java.awt.Color;
+import java.util.ArrayList;
+
+/*
+ * There are 2 velocity values. One global one in Model and one in AnimatedBall.
+ * Don't remove Bricks manually. They have hitPoints and update() removes them if HP <= 0.
+ * 
+ * To-do:
+ * 
+ * MANDATORY
+ * - write comments
+ * - remove view from controller
+ * - make clean cut between controller and model
+ * - implement losing and winning conditions.
+ * 
+ * IMPORTANT
+ * - investigate "path" prediction and clipping
+ * - sometimes the ball clips through window corners and has problems with negative values.
+ * 
+ * DESIREABLE
+ * - improve interface
+ * - multiple levels
+ * - multiple lives
+ * - pause function
+ * - high score board
+ * 
+ * OPTIONAL
+ * - implement punishing mechanics (e.g. balls get faster)
+ * - implement reward mechanics (e.g. power ups, combo multiplier, fancy effects)
+ * - multiple hits / strong balls 
+ * - different modes/themes
+ * 
+ */
+
+public class FunctionalityTest extends GraphicsProgram {
+
+	/* Debugging */
+	/* Debugging */
+
+	private Timer timer = Model.getTimer();
+	private int score;
+	ArrayList<Brick> level = new ArrayList<Brick>();
+
+	public void run() {
+
+		setSize(Model.getWidth(), Model.getHeight());
+
+		GLabel scoreLabel = new GLabel("", 10, 20);
+		add(scoreLabel);
+
+		// Bounding walls
+		double thickness = 50;
+		GRect left = new GRect(-thickness - 1 + 10, -thickness, thickness, 2 * thickness + Model.getHeight());
+		GRect right = new GRect(Model.getWidth() - 10, -thickness, thickness, 2 * thickness + Model.getHeight());
+		GRect up = new GRect(-thickness, -thickness - 1 + 10, 2 * thickness + Model.getWidth(), thickness);
+		add(left);
+		add(right);
+		add(up);
+		left.sendToFront();
+		right.sendToFront();
+		up.sendToFront();
+
+		// "Level generator"
+		int columns = 5;
+		int rows = 5;
+		for (int i = 0; i < columns; i++) {
+			for (int j = 0; j < rows; j++) {
+				Brick brick = new Brick((Model.getWidth() - 15) / columns * j + 15,
+						Model.getHeight() / 3 / rows * i + 40);
+				Color brickColor = new Color(i * j, i * j, i * j);
+				brick.setColor(brickColor);
+				brick.setFilled(true);
+				level.add(brick);
+			}
+		}
+		update(level);
+
+		// Create ball
+		AnimatedBall curBall = Model.getRedBall();
+		curBall.setFilled(true);
+		curBall.setColor(Color.RED);
+		curBall.setDirection(70);
+		add(curBall, Model.getBallStart());
+		Thread curBallThread = new Thread(curBall);
+		curBallThread.start();
+
+		// Create paddle
+		AnimatedPaddle curPaddle = Model.getPaddle();
+		curPaddle.setFilled(true);
+		curPaddle.setColor(Color.BLACK);
+		add(curPaddle, Model.getPaddleStart());
+		Thread curPaddleThread = new Thread(curPaddle);
+		curPaddleThread.start();
+
+		// Starting screen
+		GLabel startMessage = new GLabel("Click to start Breakout!");
+		startMessage.setLocation(Model.getWidth() / 2 - startMessage.getWidth() / 2, Model.getHeight()/2);
+		add(startMessage);
+		waitForClick();
+		remove(startMessage);
+
+		// more starting stuff
+		curBall.setPixelPerTick(5);
+
+		boolean runningCondition = curBallThread.isAlive() && !Model.isLost() && !Model.isWon() && !level.
+				&& !Model.isPause();
+		while (runningCondition) {
+
+			if (wouldCollideWith(curBall) != null) {
+				double calcDirection = calculateDirection(curBall, wouldCollideWith(curBall));
+				curBall.setDirection(calcDirection);
+
+				/* Debugging */
+				scoreLabel.setLabel("Score: " + score);
+				/* Debugging */
+
+			}
+			
+			if(curBall.getY() <= Model.getHeight()){
+				Model.setLost(true);
+			}
+			
+			update(level);
+			timer.pause();
+		}
+
+		// Game over screen
+		GLabel gameOver = isWon? new GLabel("You Win!") : new GLabel("You Lose!");
+		GLabel highScore = new GLabel("Your score is: " + score + "!");
+		gameOver.setLocation((Model.getWidth() - gameOver.getWidth())/2, Model.getHeight() / 2);
+		highScore.setLocation((Model.getWidth() - highScore.getWidth())/2, Model.getHeight() / 2 - 30);
+		add(gameOver);
+		add(highScore);
+
+	}
+
+	private Object wouldCollideWith(AnimatedBall curBall) {
+
+		// Wrong starting point and anti-clockwise rotation of direction.
+		// double deltaX = Math.sin(Math.toRadians(curBall.getDirection())) *
+		// AnimatedBall.getDelta();
+		// double deltaY = Math.cos(Math.toRadians(curBall.getDirection())) *
+		// AnimatedBall.getDelta();
+
+		double ballX = curBall.getX();
+		double ballY = curBall.getY();
+		double size = AnimatedBall.getBallSize();
+		double deltaX = Math.cos(Math.toRadians(curBall.getDirection())) * AnimatedBall.getDelta();
+		double deltaY = -Math.sin(Math.toRadians(curBall.getDirection())) * AnimatedBall.getDelta();
+
+		return collisionObject(ballX, ballY, size, deltaX, deltaY);
+
+	}
+
+	// if (!(collisionObject instanceof GCanvas || collisionObject instanceof
+	// AnimatedBall)) {
+	// collisionObject = getElementAt(ballX + deltaX + size, ballY + deltaY);
+	// println(collisionObject);
+	// if (!(collisionObject instanceof GCanvas || collisionObject instanceof
+	// AnimatedBall)) {
+	// collisionObject = getElementAt(ballX + deltaX, ballY + deltaY + size);
+	// println(collisionObject);
+	// if (!(collisionObject instanceof GCanvas || collisionObject instanceof
+	// AnimatedBall)) {
+	// collisionObject = getElementAt(ballX + deltaX + size, ballY + deltaY +
+	// size);
+	// println(collisionObject);
+	// } else {
+	// /* When all cllisionObjects were GCanvas */
+	// collisionObject = null;
+	// }
+	// } else {
+	// /* When all cllisionObjects were GCanvas */
+	// collisionObject = null;
+	// }
+	// } else {
+	// /* When all cllisionObjects were GCanvas */
+	// collisionObject = null;
+	// }
+	//
+	// return collisionObject;
+	// }
+
+	private double calculateDirection(AnimatedBall redBall, Object elementAt) {
+		double newDirection = redBall.getDirection();
+		// if(redBall.getX() >= Model.getWidth() || redBall.getX() <= 0 ||
+		// redBall.getY() <= 0){
+		// reflect(redBall);
+		// t }
+
+		if (elementAt instanceof AnimatedPaddle) {
+			newDirection = paddleReflect(redBall, (AnimatedPaddle) elementAt);
+			// }else if(elementAt instanceof Brick /*|| elementAt instanceof
+			// Wall*/){
+			// newDirection = reflect(redBall);
+			// }else if(elementAt instanceof Bottom){
+			// Model.setLost(true);
+		} else if (elementAt instanceof GRect) {
+			newDirection = reflectUniversal(redBall, (GRect) elementAt);
+			if (elementAt instanceof Brick) {
+				((Brick) elementAt).setHitPoints(((Brick) elementAt).getHitPoints() - redBall.getHit());
+				update(level);
+			}
+		} else {
+			assert false : "No legal collision object handed to calculate new direction.";
+		}
+
+		assert newDirection == redBall.getDirection() : "No new direction set.";
+		return newDirection;
+	}
+
+	private double paddleReflect(AnimatedBall ball, AnimatedPaddle paddle) {
+		double transformationFactor = 0.7;
+
+		double direction = ball.getDirection() % 360;
+		double deltaDistance = ball.getX() + ball.getWidth() / 2 - paddle.getX();
+		double deltaMax = -(paddle.getWidth() / 2.0 + ball.getWidth());
+
+		double newDirection;
+		if (direction <= 180) {
+			newDirection = 180 - direction;
+		} else {
+			newDirection = 360 - direction;
+		}
+		newDirection = (newDirection - (-(deltaDistance / deltaMax + 1) * newDirection * transformationFactor)) % 180;
+		return newDirection;
+	}
+
+	// private static double reflect(AnimatedBall ball, GRect col) {
+	// double newDirection;
+	// double direction = ball.getDirection();
+	// int side = (int) (direction / 90);
+	// switch (side) {
+	// case 0:
+	// if (col.getX() - ball.getX() - ball.getWidth() < col.getY() +
+	// col.getHeight() - ball.getY()) {
+	// c1 = true;
+	// return 180 - direction;
+	// } else {
+	// c1 = false;
+	// return 360 - direction;
+	// }
+	// //Needs work. ->
+	// case 1:
+	// if (col.getX() + col.getWidth() - ball.getX() < - col.getY() +
+	// ball.getY() + ball.getBallSize()){
+	// c2 = true;
+	// return 180 - direction;
+	// } else {
+	// c2 = false;
+	// return 360 - direction;
+	// }
+	// case 2:
+	// if (col.getX() - ball.getX() - ball.getWidth() < col.getY() +
+	// col.getHeight() - ball.getY()
+	// - ball.getBallSize()) {
+	// c3 = true;
+	// return 180 - direction;
+	// } else {
+	// c3 = false;
+	// return 360 - direction;
+	// }
+	// case 3:
+	// if (col.getX() + col.getWidth() - ball.getX() < col.getY() +
+	// col.getHeight() - ball.getY()) {
+	// c4 = true;
+	// return 180 - direction;
+	// } else {
+	// c4 = false;
+	// return 360 - direction;
+	// }
+	// default:
+	// assert (false) : "Reflection can not be calculated correctly";
+	// newDirection = direction;
+	// }
+	// return newDirection;
+	// }
+	//
+	// }
+
+	private double reflectUniversal(AnimatedBall ball, GRect col) {
+		double direction = ball.getDirection();
+		double newDirection;
+
+		double ballX = ball.getX();
+		double ballY = ball.getY();
+		double size = AnimatedBall.getBallSize();
+		double deltaX = Math.cos(Math.toRadians(180 - direction)) * AnimatedBall.getDelta();
+		double deltaY = -Math.sin(Math.toRadians(180 - direction)) * AnimatedBall.getDelta();
+
+		if (collisionObject(ballX, ballY, size, deltaX, deltaY) != null) {
+			newDirection = 360 - direction;
+		} else {
+			newDirection = 180 - direction;
+		}
+		return newDirection;
+	}
+
+	private void update(ArrayList<Brick> level) {
+		for (int j = 0; j < level.size(); j++) {
+			if (level.get(j).getHitPoints() <= 0) {
+				score += level.get(j).getPoints();
+				remove(level.get(j));
+				level.remove(j);
+				break;
+			}
+		}
+		for (int i = 0; i < level.size(); i++) {
+			add(level.get(i));
+		}
+	}
+
+	private Object collisionObject(double ballX, double ballY, double size, double deltaX, double deltaY) {
+		Object collisionObject = null;
+		// bottom right
+		collisionObject = getElementAt(deltaX + ballX + size, deltaY + ballY + size);
+		if (collisionObject != null && !(collisionObject instanceof AnimatedBall)) {
+			return collisionObject;
+		} else {
+		}
+		// bottom left
+		collisionObject = getElementAt(deltaX + ballX, deltaY + ballY + size);
+		if (collisionObject != null && !(collisionObject instanceof AnimatedBall)) {
+			return collisionObject;
+		} else {
+		}
+		// upper left
+		collisionObject = getElementAt(deltaX + ballX, deltaY + ballY);
+		if (collisionObject != null && !(collisionObject instanceof AnimatedBall)) {
+			return collisionObject;
+		} else {
+		}
+		// upper right
+		collisionObject = getElementAt(deltaX + ballX + size, deltaY + ballY);
+		if (collisionObject != null && !(collisionObject instanceof AnimatedBall)) {
+			return collisionObject;
+		} else {
+		}
+		return null;
+	}
+
+}
