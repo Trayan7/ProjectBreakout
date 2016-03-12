@@ -120,7 +120,7 @@ public class FunctionalityTest extends GraphicsProgram {
 
 			}
 			
-			if(curBall.getY() <= Model.getHeight()){
+			if(curBall.getY() >= Model.getHeight()){
 				Model.setLost(true);
 			}
 			
