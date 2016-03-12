@@ -1,0 +1,48 @@
+ * 		In this Breakout implementation we used object-oriented methodology at various points.
+ * 
+ * 		This starts with the decomposition of the program according to the Model-View-Controller pattern.
+ * 		We decided against the common formal triplet split mainly for two main reason.
+ * 		Firstly the the examples calling of the 'runnable' GObjects in the lecture early contained both elements of View and Controller.
+ * 		The usual functionality of the view to display the updates of the model it is receiving from the controller is mitigated by the usage of the threads in the controller.
+ * 		Those already display the changes without the need for a separate implementation.
+ * 		Also the suggestion to use the existing elementAt method confirmed this by in theory needing data from the model but receiving them from the view (can even be shown by also returning the canvas).  
+ * 		In our implementation the only interaction would be the click to start the game and the moving of the mouse.		
+ * 		Through the low interaction of user with controller there is no real need to construct an additional small class only for it.
+ * 		So, secondly additional to the already existing overlap in some functions, which were suggested through the task description and the lecture examples, a separation would have costed a lot of effort for two very small problems.    
+ * 		For these reasons we only formally splitted the Model and the ViewController.
+ * 		ViewController / FunctionalityTest class represents the ViewController.
+ * 		The Controller aspects are: calling information of the Model classes, calling methods to make changes in the Models variables, dealing directly with input from the user.
+ * 		View aspects are: making temporary information of the model visible.		
+ * 		The classes Brick, AnimatedPaddle, AnimatedBall, Timer, Model and Level belong to the Model.
+ * 		We decomposed the Model in several classes to clearly separate the scope of their information and methods.
+ * 		They are all boxed information in the overarching MVC 'Model' box.
+ * 		
+ * 		By further decomposing the the Model we used object-oriented problem solving:
+ * 		instead of working on the problem as a whole we dealt with the parts of the problem each for itself. 
+ * 		This was mainly for the Model, since it contained information about the elements of breakout and how those elements behave and interact with each other.
+ * 		Except from the ViewController, Breakout therefore fulfills the 'Single responsibility' principle, which is exemplified as follows:
+ * 
+ * 			AnimatedBall and Animated Paddle needed to be be their own classes in order to implement 'runnable' anyway. 
+ * 			The implementation interface 'runnable' makes sure that the paddle and ball fit the requirements for threads.
+ * 			Their inheritance of the same interface shows their common traits.
+ * 			Those are for example the run()-method.
+ * 			Making the Bricks an own class is convenient since Breakout needs a lot of Bricks and having a class for them made it easy to instantiate them equally as well as making inheritances possible.
+ * 			For making different levels but letting some basics the same suggested to make an own Level class. 		
+ * 			The Model class contained the very, very basic information, that should be the same for almost every time someone starts our Breakout implementation.
+ * 			Those basic information clearly belong to the Model.
+ * 			In order to make sure these information are always the same and can always be accessed directly we made those static.
+ * 			Many of those variables are also final to prevent their modification.
+ *      
+ *    Class variables are only the most basic information.
+ *    We have no class variables for calculatable information.
+ *    Those are only used locally for a more easy handling.
+ * 		
+ * 		In order to prevent external interaction with the runnig program outside of the package most variables are private.
+ * 		For those variables that should be changeable by the user there are getter and setter-methods.
+ * 		This also hides some complexity of internal variables from the user because only the actual allowed interactions are visible for the user.
+ * 
+ * 		Complexity was also hidden through some methods like the 'reflectUniversal'-method.
+ * 		It dealt with all different kinds of reflections although there were several possibilities of reflection.
+ * 		This was made by checking internally for the different possibilities.
+ * 		But since this isn't relevant for the user the 'reflectUniversal' takes a more general Object (just GObject) and performs all necessary actions without further input. 
+ * 		This is another instance of layered abstraction.
