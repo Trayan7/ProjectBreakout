@@ -129,7 +129,7 @@ public class FunctionalityTest extends GraphicsProgram {
 		}
 
 		// Game over screen
-		GLabel gameOver = isWon? new GLabel("You Win!") : new GLabel("You Lose!");
+		GLabel gameOver = isLost? new GLabel("You Lose!") : new GLabel("You Win!");
 		GLabel highScore = new GLabel("Your score is: " + score + "!");
 		gameOver.setLocation((Model.getWidth() - gameOver.getWidth())/2, Model.getHeight() / 2);
 		highScore.setLocation((Model.getWidth() - highScore.getWidth())/2, Model.getHeight() / 2 - 30);
